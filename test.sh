@@ -1,8 +1,6 @@
 #!/bin/bash
 
-
-ros -L sbcl -Q -- --script main.lisp < 1.txt
-echo ""
-ros -L sbcl -Q -- --script main.lisp < 2.txt
-echo ""
-ros -L sbcl -Q -- --script main.lisp < 3.txt
+for file in [0-9]*.txt; do
+    [ -f "$file" ] && ros -L sbcl -Q -- --script main.lisp < "$file"
+    echo ""
+done

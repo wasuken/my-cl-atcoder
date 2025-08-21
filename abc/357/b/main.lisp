@@ -20,24 +20,13 @@
       (drop (1- n) (cdr l))))
 
 (let* ((s (read-line))
-      (scl (loop for c across s
-		 collect c)))
-  (format t "~a~%"
-	  (if (<
-	       ;; 小文字だけ
-	       (length (remove-if #'(lambda (c) (and (>= (char-code c) (char-code #\A))
-						     (<= (char-code c) (char-code #\Z))))
-				  scl))
-	       ;; 大文字だけ
-	       (length (remove-if-not #'(lambda (c) (and (>= (char-code c) (char-code #\A))
-							 (<= (char-code c) (char-code #\Z))))
-				      scl)))
-	      ;; 小文字<大文字->全部大文字
-	      (string-upcase s)
-	      ;; 小文字>=大文字->全部小文字
-	      (string-downcase s)
-	      )
-	  )
+       (scl (coerce s 'list)))
+  (format t "~a~%" (if (< (length (remove-if-not #'upper-case-p scl))
+			  (length (remove-if #'upper-case-p scl))
+			  )
+		       (string-downcase s)
+		       (string-upcase s)
+		       ))
   )
 
 ;; 処理系ごとの離脱用のコード。これがないとエラーが出る

@@ -1,0 +1,61 @@
+;; (let ((rl (read-line)))
+;;   (format t "~s~%" (uiop:split-string rl :separator " "))
+;;   (format t "~a~%" (mapcar #'parse-integer (uiop:split-string rl :separator " ")))
+;;   )
+;; nを読み取って、n回行を読み取る
+;; (let ((n (parse-integer (read-line))))
+;;   (format t "~a~%" (count-if #'(lambda (x) (string= x "Takahashi"))
+;; 		   (loop for x from 0 to (1- n)
+;; 			 collect (read-line))))
+;;   )
+
+(defun take (n l)
+  (if (or (= n 0) (not l))
+      '()
+      (cons (car l) (take (1- n) (cdr l)))))
+
+(defun drop (n l)
+  (if (or (= n 0) (not l))
+      l
+      (drop (1- n) (cdr l))))
+
+(let* ((nm (mapcar #'parse-integer (uiop:split-string (read-line) :separator " ")))
+       (sl (loop for i from 0 to (1- (nth 0 nm))
+		 collect (read-line)))
+       (agr (loop for i from 0 to (1- (nth 1 nm))
+		  collect (let* ((x (count #\0 (mapcar #'(lambda (x) (char x i)) sl)))
+				 (y (- (nth 0 nm) x)))
+			    (cond ((or (= x 0)
+				       (= y 0))
+				   (loop for i from 1 to (length sl) collect 1))
+				  ((< x y)
+				   (mapcar #'(lambda (x) (if (equal (char x i) #\0)
+							     1
+							     0)
+					       )
+					   sl))
+				  (t
+				   (mapcar #'(lambda (x) (if (equal (char x i) #\0)
+							     0
+							     1)
+					       )
+					   sl))
+				  )
+			    )
+		  ))
+       (total-lst (loop for i from 0 to (1- (nth 0 nm))
+			collect (reduce #'(lambda (acm x) (+ acm (nth i x))) agr :initial-value 0)))
+       (mv (apply #'max total-lst)))
+  (format t "~{~a~^ ~}~%" (remove-if-not #'(lambda (i) (= mv (nth (1- i) total-lst)))
+				     (loop for i from 1 to (nth 0 nm)
+					   collect i
+					   )
+				     )
+	  )
+  )
+
+;; 処理系ごとの離脱用のコード。これがないとエラーが出る
+#+sbcl (sb-ext:exit)
+#+ccl (ccl:quit)
+#+ecl (ext:quit)
+#-(or sbcl ccl ecl) (quit)

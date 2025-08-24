@@ -1,0 +1,27 @@
+(let* ((nq (mapcar #'parse-integer (uiop:split-string (read-line) :separator " ")))
+       (n (first nq))
+       (q (second nq))
+       (al (make-array n :initial-contents (subseq (mapcar #'parse-integer (uiop:split-string (read-line) :separator " ")) 0 n)))
+       (bl (make-array n :initial-contents (subseq (mapcar #'parse-integer (uiop:split-string (read-line) :separator " ")) 0 n)))
+       (cql (loop for i from 1 to q
+		  collect (uiop:split-string (read-line) :separator " ")))
+       (bsum (apply '+ (loop for k from 0 to (1- n)
+			     collect (min (aref al k) (aref bl k))))))
+  (loop for query in cql
+	do (let* ((xi (1- (parse-integer (nth 1 query))))
+		  (vi (parse-integer (nth 2 query)))
+		  (bfv (min (aref al xi) (aref bl xi))))
+	     (if (eql #\A (char (nth 0 query) 0))
+		 (setf (aref al xi) vi)
+		 (setf (aref bl xi) vi))
+	     (setf bsum (+ (- bsum bfv) (min (aref al xi) (aref bl xi))))
+	     (format t "~a~%" bsum)
+	     )
+	)
+  )
+
+;; 処理系ごとの離脱用のコード。これがないとエラーが出る
+#+sbcl (sb-ext:exit)
+#+ccl (ccl:quit)
+#+ecl (ext:quit)
+#-(or sbcl ccl ecl) (quit)

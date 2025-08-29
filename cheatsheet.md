@@ -224,3 +224,37 @@ x```lisp
            ;; 現在の状態を出力
            (format t "~a~%" (process-current-state blist))))
 ```
+
+## 変換
+
+### stringからarrayへ
+
+```lisp
+(defun s->a (s)
+	   (make-array (length s) :initial-contents (loop for c across s collect c)))
+
+```
+
+### stringで特定座標の文字置換
+
+```lisp
+(defun replace-char-at (string position new-char)
+(concatenate 'string
+             (subseq string 0 position)
+             (string new-char)
+             (subseq string (1+ position))))
+```
+
+### string内部のswap
+
+```lisp
+(defun replace-char-at (string position new-char)
+(concatenate 'string
+             (subseq string 0 position)
+             (string new-char)
+             (subseq string (1+ position))))
+(defun string-swap (s n m)
+	   (let* ((a (char s n))
+		  (b (char s m)))
+	     (replace-char-at (replace-char-at s n b) m a)))
+```

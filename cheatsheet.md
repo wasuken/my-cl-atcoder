@@ -51,6 +51,12 @@ x```lisp
   (if (or (= n 0) (not l))
       l
       (drop (1- n) (cdr l))))
+
+(defun rev (l &optional acc)
+  "リストを逆にする"
+  (if (null l)
+      acc
+      (rev (cdr l) (cons (car l) acc))))
 ```
 
 ### 文字列操作

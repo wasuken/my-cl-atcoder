@@ -1,0 +1,12 @@
+(let* ((stage (mapcar #'parse-integer  (uiop:split-string (read-line) :separator "-")))
+      (mejor (first stage))
+      (minor (second stage)))
+  (if (> (1+ minor) 8)
+      (format t "~a-~a~%" (1+ mejor) 1)
+      (format t "~a-~a~%" mejor (1+ minor)))
+  )
+;; 処理系ごとの離脱用のコード。これがないとエラーが出る
+#+sbcl (sb-ext:exit)
+#+ccl (ccl:quit)
+#+ecl (ext:quit)
+#-(or sbcl ccl ecl) (quit)

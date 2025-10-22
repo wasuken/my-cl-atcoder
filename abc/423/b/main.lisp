@@ -1,0 +1,27 @@
+(defun linked-list (ll)
+  (if (and (> (length ll) 0)
+	   (= (car ll) 0))
+      (cons (car ll)
+	    (linked-list (cdr ll))))
+  )
+
+(let ((n (read))
+      (ll (mapcar #'parse-integer (uiop:split-string (read-line) :separator " ")))
+      (cnt 0))
+  (cond ((every #'(lambda (x) (= x 0)) ll)
+	 (format t "~a~%" 0))
+	(t
+	 (loop for x in ll
+	       while (= x 0)
+	       do (if (= x 0)
+		      (incf cnt)))
+	 (loop for x in (reverse ll)
+	       while (= x 0)
+	       do (if (= x 0)
+		      (incf cnt)))
+	 (format t "~a~%" (- n cnt 1)))))
+;; 処理系ごとの離脱用のコード。これがないとエラーが出る
+#+sbcl (sb-ext:exit)
+#+ccl (ccl:quit)
+#+ecl (ext:quit)
+#-(or sbcl ccl ecl) (quit)

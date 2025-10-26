@@ -1,0 +1,30 @@
+
+(let* ((n (read))
+       (alst (mapcar #'parse-integer (uiop:split-string (read-line) :separator " ")))
+       (used-nums (remove -1 alst))
+       (available-nums (loop for i from 1 to n
+			     unless (member i used-nums)
+			       collect i))
+       (rst (cond ((every #'(lambda (x) (= x -1)) alst)
+		   "Yes")
+		  ((= (length used-nums)
+		      (length (remove-duplicates used-nums)))
+		   "Yes")
+		  (t
+		   "No")
+		  )))
+  (cond ((string= rst "No")
+	 (format t "~a~%" rst))
+	(t
+	 (format t "~a~%" rst)
+	 (format t "~{~a~^ ~}~%" (loop for x in alst collect (if (= x -1)
+								 (pop available-nums)
+								 x)))
+	 )
+	)
+  )
+;; 処理系ごとの離脱用のコード。これがないとエラーが出る
+#+sbcl (sb-ext:exit)
+#+ccl (ccl:quit)
+#+ecl (ext:quit)
+#-(or sbcl ccl ecl) (quit)
